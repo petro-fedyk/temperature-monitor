@@ -18,6 +18,9 @@
 #include "index_html.h"
 #include "readTemapature.h"
 #include "variable.h"
+#include "clock.h"
+#include "convertJson.h"
+#include "storage.h"
 
 #define ONE_WIRE_BUS 4
 
@@ -26,7 +29,7 @@ OneWire oneWire(ONE_WIRE_BUS);
 DallasTemperature sensors(&oneWire);
 
 unsigned long lastTime = 0;
-unsigned long timerDelay = 1000;
+unsigned long timerDelay = 30000;
 
 void updateTemperature()
 {
@@ -39,6 +42,13 @@ void updateTemperature()
       updateMinTemp(temperatureC);
       updateMaxTemp(temperatureC);
       checkAlarm(temperatureC);
+
+      String jsonStr = convertToJson(timeBuffer, temperatureC, maxTemperature, minTemperature, isMaxAlarm, isMinAlarm);
+      writeData(jsonStr);
+      // printJson(jsonStr);
+
+      String jsonString = readData();
+      Serial.println(jsonString);
     }
     lastTime = millis();
   }
@@ -50,13 +60,16 @@ void setup()
   connectWiFi();
   InitMDNS();
   Serial.println();
+  storageSetUp();
 
   sensors.begin();
   temperatureC = readDSTemperatureC();
+  setupTime();
 }
 
 void loop()
 {
   updateTemperature();
   MDNS.update();
+  getTime();
 }
