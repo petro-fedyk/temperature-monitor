@@ -3,9 +3,11 @@
 #define HOST_NAME "fridge-tag"
 #include <ESPAsyncTCP.h>
 #include <ESPAsyncWebServer.h>
+
 #include "index_html.h"
 #include "readTemapature.h"
 #include "variable.h"
+#include "storage.h"
 
 // Replace with your network credentials
 const char *ssid = "admin";
@@ -62,6 +64,9 @@ void connectWiFi()
                   alarmStatus = "No Alarm";
                 }
                 request->send(200, "text/plain", alarmStatus); });
+
+  server.on("/download", HTTP_GET, [](AsyncWebServerRequest *request)
+            { request->send(LittleFS, "/data.json", "application/json", true); });
 
   server.begin();
 }

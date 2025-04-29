@@ -50,7 +50,10 @@ const char index_html[] PROGMEM = R"rawliteral(
         <span id="alarm">%NO ALARM%</span>
         <sup class="units">&deg;C</sup>
       </p>
-      
+      <a href="/download" download>
+  <button>📥 Download Data</button>
+</a>
+
     </body>
     <script>
     setInterval(function () {
