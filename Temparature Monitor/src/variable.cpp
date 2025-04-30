@@ -7,4 +7,4 @@ float maxTempAlarm = 25;
 float minTempAlarm = 20;
 bool isMaxAlarm = false;
 bool isMinAlarm = false;
-char timeBuffer[30];
+char timeBuffer[32];

@@ -29,7 +29,24 @@ OneWire oneWire(ONE_WIRE_BUS);
 DallasTemperature sensors(&oneWire);
 
 unsigned long lastTime = 0;
-unsigned long timerDelay = 10000;
+unsigned long lastJsonTime = 0;
+
+unsigned long timerDelay = 1000;
+unsigned long jsonTime = 900000;
+
+void updateJson()
+{
+  if ((millis() - lastJsonTime) > jsonTime)
+  {
+    String jsonStr = convertToJson(timeBuffer, temperatureC, maxTemperature, minTemperature, isMaxAlarm, isMinAlarm);
+    writeData(jsonStr);
+    // printJson(jsonStr);
+
+    String jsonString = readData();
+    Serial.println(jsonString);
+    lastJsonTime = millis();
+  }
+}
 
 void updateTemperature()
 {
@@ -42,13 +59,6 @@ void updateTemperature()
       updateMinTemp(temperatureC);
       updateMaxTemp(temperatureC);
       checkAlarm(temperatureC);
-
-      String jsonStr = convertToJson(timeBuffer, temperatureC, maxTemperature, minTemperature, isMaxAlarm, isMinAlarm);
-      writeData(jsonStr);
-      // printJson(jsonStr);
-
-      String jsonString = readData();
-      Serial.println(jsonString);
     }
     lastTime = millis();
   }
@@ -69,6 +79,7 @@ void setup()
 
 void loop()
 {
+  updateJson();
   updateTemperature();
   MDNS.update();
   getTime();

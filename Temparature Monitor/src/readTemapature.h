@@ -53,12 +53,19 @@ void checkAlarm(float tempC)
     if (tempC > maxTempAlarm)
     {
         isMaxAlarm = true;
+        isMinAlarm = false;
         Serial.println("Temperature max alarm triggered!");
     }
     else if (tempC < minTempAlarm)
     {
         isMaxAlarm = true;
+        isMaxAlarm = false;
         Serial.println("Temperature alarm min triggered!");
+    }
+    else
+    {
+        isMaxAlarm = false;
+        isMinAlarm = false;
     }
     return;
 }

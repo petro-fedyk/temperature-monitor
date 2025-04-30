@@ -8,7 +8,7 @@
 
 String convertToJson(String timeBuffer, float temperatureC, float maxTemperature, float minTemperature, bool isMaxAlarm, bool isMinAlarm)
 {
-    StaticJsonDocument<256> doc;
+    StaticJsonDocument<1024> doc;
 
     doc["time"] = timeBuffer;
     doc["temperatureC"] = temperatureC;

@@ -1,6 +1,6 @@
 #ifndef CLOCK_H
 #define CLOCK_H
-// fix update if time not avaliable update time
+
 #include <Arduino.h>
 #include "time.h"
 #include "variable.h"

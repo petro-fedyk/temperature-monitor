@@ -8,6 +8,6 @@ extern float maxTempAlarm;
 extern float minTempAlarm;
 extern bool isMaxAlarm;
 extern bool isMinAlarm;
-extern char timeBuffer[30];
+extern char timeBuffer[32];
 
 #endif
