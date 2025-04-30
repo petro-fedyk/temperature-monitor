@@ -21,6 +21,7 @@
 #include "clock.h"
 #include "convertJson.h"
 #include "storage.h"
+// #include "sendToBackEnd.h"
 
 #define ONE_WIRE_BUS 4
 
@@ -41,6 +42,7 @@ void updateJson()
     String jsonStr = convertToJson(timeBuffer, temperatureC, maxTemperature, minTemperature, isMaxAlarm, isMinAlarm);
     writeData(jsonStr);
     // printJson(jsonStr);
+    // sendToServer(timeBuffer, temperatureC, maxTemperature, minTemperature, isMaxAlarm, isMinAlarm);
 
     String jsonString = readData();
     Serial.println(jsonString);
