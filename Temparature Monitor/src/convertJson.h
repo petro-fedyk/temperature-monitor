@@ -6,9 +6,9 @@
 #include "readTemapature.h"
 #include "variable.h"
 
-String convertToJson(String timeBuffer, float temperatureC, float maxTemperature, float minTemperature, bool isMaxAlarm, bool isMinAlarm)
+String convertToJson(const String &timeBuffer, float temperatureC, float maxTemperature, float minTemperature, bool isMaxAlarm, bool isMinAlarm)
 {
-    StaticJsonDocument<1024> doc;
+    JsonDocument doc;
 
     doc["time"] = timeBuffer;
     doc["temperatureC"] = temperatureC;
