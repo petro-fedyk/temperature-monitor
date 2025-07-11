@@ -72,7 +72,6 @@ void setup()
   Serial.begin(115200);
   connectWiFi();
   InitMDNS();
-  Serial.println();
   storageSetUp();
 
   sensors.begin();
