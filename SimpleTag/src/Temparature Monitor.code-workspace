@@ -1,0 +1,12 @@
+{
+	"folders": [
+		{
+			"path": "../../Temparature Monitor"
+		},
+		{
+			"name": "SimpleTag",
+			"path": ".."
+		}
+	],
+	"settings": {}
+}
