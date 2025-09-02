@@ -1,6 +1,7 @@
 #include <Arduino.h>
 #include <Wire.h>
 #include <GxEPD2_BW.h>
+#define DISABLE_DIAGNOSTIC_OUTPUT
 #include <Fonts/FreeSansBold12pt7b.h>
 #include <Fonts/FreeMono9pt7b.h>
 #include <Fonts/FreeSans12pt7b.h>
@@ -27,6 +28,7 @@ const int ledPin = LED_BUILTIN;
 unsigned long waitingTime = 0;
 unsigned long backToWaitTime = 0;
 unsigned long enterZeroTime = 0;
+unsigned long zeroSetUp = 0;
 
 uint8_t state = 0;
 
@@ -193,6 +195,7 @@ void handleData()
     {
         incrementField();
         printDate();
+        setDataEpaper();
         delay(200); // антидребезг
     }
 
@@ -202,6 +205,8 @@ void handleData()
         currentField = (currentField + 1) % 5; // переходимо до наступного поля
         Serial.print("Selected field: ");
         Serial.println(currentField);
+        setDataEpaper();
+
         delay(200);
     }
 
@@ -269,23 +274,23 @@ void printEPaper() {}
 
 void setDataEpaper()
 {
-    char buffer1[32], buffer2[32], buffer3[32], buffer4[32], buffer5[32], buffer6[32];
-    snprintf(buffer1, sizeof(buffer1), "%d", day);
-    snprintf(buffer2, sizeof(buffer2), "%d", month);
-    snprintf(buffer3, sizeof(buffer3), "%d", year);
-    snprintf(buffer4, sizeof(buffer4), "%d", hour);
-    snprintf(buffer5, sizeof(buffer5), "%d", minute);
 
+    char buffer1[32], buffer2[32];
+
+    snprintf(buffer1, sizeof(buffer1), "%02d.%02d.%04d", day, month, year);
+    snprintf(buffer2, sizeof(buffer2), "%02d:%02d", hour, minute);
+
+    display.firstPage();
     do
     {
         display.fillScreen(GxEPD_WHITE);
 
-        // date
         display.setFont(&FreeSans12pt7b);
         display.setCursor(10, 30);
         display.print(buffer1);
-        display.print(buffer2);
-        display.print(buffer3);
 
+        display.setFont(&FreeSans12pt7b);
+        display.setCursor(150, 120);
+        display.print(buffer2);
     } while (display.nextPage());
 }
