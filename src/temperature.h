@@ -6,6 +6,7 @@
 extern float tempC;
 extern float maxTemp;
 extern float minTemp;
+extern float avrTemp;
 extern float maxTempAlarm;
 extern float minTempAlarm;
 

@@ -11,24 +11,6 @@
 #include "config.h"
 #include "epaper.h"
 
-const int ledPin = LED_BUILTIN;
-
-#define WAITING_MODE_DELAY 3000
-// #define WAITING_MODE_DELAY 10000
-#define BACK_TO_WAIT 60000
-#define ENTER_TIME 6000
-
-unsigned long waitingTime = 0;
-unsigned long backToWaitTime = 0;
-unsigned long enterZeroTime = 0;
-unsigned long zeroSetUp = 0;
-
-uint8_t state = 0;
-
-bool buttonsHold = false;
-bool isBtnPres = false;
-bool enterHold = false;
-
 GxEPD2_BW<GxEPD2_213_BN, GxEPD2_213_BN::HEIGHT> display(GxEPD2_213_BN(EPD_CS, EPD_DC, EPD_RST, EPD_BUSY));
 STM32RTC &rtc = STM32RTC::getInstance();
 
@@ -39,7 +21,6 @@ void incrementField();
 void handleData();
 void setDataEpaper();
 void setDateRTC();
-
 void readTemp();
 uint16_t readRegister16(uint8_t address, uint8_t reg);
 void checkAlarm();

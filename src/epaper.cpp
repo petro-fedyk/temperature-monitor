@@ -32,7 +32,7 @@ void printEPaper()
     int tempInt = (int)(tempC * 100);
     int maxInt = (int)(maxTemp * 100);
     int minInt = (int)(minTemp * 100);
-    int avgInt = (int)(maxTemp * 100); // (тимчасово, якщо треба буде — перерахуємо справжнє середнє)
+    int avgInt = (int)(avrTemp * 100); // (тимчасово, якщо треба буде — перерахуємо справжнє середнє)
 
     // Форматування рядків
     snprintf(buffer1, sizeof(buffer1), "%d.%02d C", tempInt / 100, abs(tempInt % 100));

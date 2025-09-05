@@ -1,6 +1,6 @@
 #ifndef CONFIG_H
 #define CONFIG_H
-
+#include <Arduino.h>
 #define SET_BTN PB12
 #define ENTER_BTN PB13
 
@@ -12,6 +12,24 @@
 
 // #define DELAY_SHOW_TEMP 1200000
 #define DELAY_SHOW_TEMP 1000
+
+#define WAITING_MODE_DELAY 3000
+// #define WAITING_MODE_DELAY 10000
+#define BACK_TO_WAIT 60000
+#define ENTER_TIME 6000
+
+extern const int ledPin;
+
+extern unsigned long waitingTime;
+extern unsigned long backToWaitTime;
+extern unsigned long enterZeroTime;
+extern unsigned long zeroSetUp;
+
+extern uint8_t state;
+
+extern bool buttonsHold;
+extern bool isBtnPres;
+extern bool enterHold;
 
 extern unsigned long showTempTimer;
 
