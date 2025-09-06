@@ -1,6 +1,7 @@
 #include "config.h"
 
 unsigned long showTempTimer = 0;
+unsigned long showAlarmTimer = 0;
 
 const int ledPin = LED_BUILTIN;
 

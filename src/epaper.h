@@ -13,6 +13,7 @@
 extern GxEPD2_BW<GxEPD2_213_BN, GxEPD2_213_BN::HEIGHT> display;
 void setDataEpaper();
 void printEPaper();
+void dateEpaper();
 void drawCheckMark(int16_t x_offset, int16_t y_offset);
 void drawCrossMark(int16_t x_offset, int16_t y_offset);
 void drawThermometerSymbol(int16_t x, int16_t y);

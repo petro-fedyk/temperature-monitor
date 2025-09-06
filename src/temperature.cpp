@@ -15,21 +15,25 @@ uint16_t hourCount = 0;
 float daySum = 0;
 uint8_t hoursPassed = 0;
 
-bool isAlarm = false;
-bool isOutOfRange = false;
+bool isLowAlarm = false;
+bool isHighAlarm = false;
 
 unsigned long currTime = 0;
-unsigned long relaxCurr = 0;
+
+unsigned long lowOutStart = 0;
+unsigned long highOutStart = 0;
+
 unsigned long lastHourTime = 0;
 unsigned long lastDayTime = 0;
 
 #define SENSOR_ADDR 0x48
 #define UPDATE_TIME 2000
-#define RELAX_TIME 30000
+#define LOW_ALARM_TIME (8UL * 60000UL)   // 8 хв
+#define HIGH_ALARM_TIME (15UL * 60000UL) // 15 хв
 // #define HOUR_TIME 3600000 // 1 година
 // #define DAY_TIME 86400000 // 1 доба
-#define HOUR_TIME 5000 // for debuging
-#define DAY_TIME 10000 // for debuging
+#define HOUR_TIME 10000 // for debuging
+#define DAY_TIME 20000  // for debuging
 
 void readTemp()
 {
@@ -61,31 +65,46 @@ uint16_t readRegister16(uint8_t address, uint8_t reg)
 
 void checkAlarm()
 {
-    bool tempOutOfRange = (tempC > maxTempAlarm || tempC < minTempAlarm);
+    unsigned long now = millis();
 
-    if (!isAlarm) // Якщо тривога ще не була активована
+    // --- Перевірка нижньої межі ---
+    if (tempC < minTempAlarm)
     {
-        if (tempOutOfRange)
+        if (lowOutStart == 0) // перший вихід
         {
-            if (!isOutOfRange)
-            {
-                // Перший вихід за межі — старт відліку
-                isOutOfRange = true;
-                relaxCurr = millis();
-                Serial.println("Out of range started");
-            }
-            else if (millis() - relaxCurr >= RELAX_TIME)
-            {
-                // Якщо тривалість перевищила RELAX_TIME — активуємо тривогу
-                isAlarm = true;
-                Serial.println("Alarm is activate");
-            }
+            lowOutStart = now;
+            Serial.println("Temperature below min started");
         }
-        else
+        else if (!isLowAlarm && (now - lowOutStart >= LOW_ALARM_TIME))
         {
-            // Температура повернулась в межі до завершення RELAX_TIME
-            isOutOfRange = false;
+            isLowAlarm = true;
+            Serial.println("LOW ALARM: temp below min for >8 minutes");
         }
+    }
+    else
+    {
+        // Повернулась у норму
+        lowOutStart = 0;
+    }
+
+    // --- Перевірка верхньої межі ---
+    if (tempC > maxTempAlarm)
+    {
+        if (highOutStart == 0) // перший вихід
+        {
+            highOutStart = now;
+            Serial.println("Temperature above max started");
+        }
+        else if (!isHighAlarm && (now - highOutStart >= HIGH_ALARM_TIME))
+        {
+            isHighAlarm = true;
+            Serial.println("HIGH ALARM: temp above max for >15 minutes");
+        }
+    }
+    else
+    {
+        // Повернулась у норму
+        highOutStart = 0;
     }
 }
 
@@ -94,7 +113,9 @@ void updateTemp()
     if (millis() - currTime >= UPDATE_TIME)
     {
         readTemp();
+
         checkAlarm();
+
         if (tempC > maxTemp)
         {
             maxTemp = tempC;

@@ -23,6 +23,29 @@ void setDataEpaper()
     } while (display.nextPage());
 }
 
+void dateEpaper()
+{
+    char buffer1[32], buffer2[32];
+
+    snprintf(buffer1, sizeof(buffer1), "%02d.%02d.%04d", rtc.getDay(), rtc.getMonth(), rtc.getYear() + 2000);
+    snprintf(buffer2, sizeof(buffer2), "%02d:%02d", rtc.getHours(), rtc.getMinutes());
+
+    display.firstPage();
+    do
+    {
+        display.fillScreen(GxEPD_WHITE);
+
+        display.setFont(&FreeSans12pt7b);
+        display.setCursor(10, 30);
+        display.print(buffer1);
+
+        display.setFont(&FreeSans12pt7b);
+        display.setCursor(180, 120);
+        display.print(buffer2);
+
+    } while (display.nextPage());
+}
+
 void printEPaper()
 {
     char buffer1[32], buffer2[32], buffer3[32], buffer4[32], buffer5[32], buffer6[32],
@@ -40,16 +63,8 @@ void printEPaper()
     snprintf(buffer3, sizeof(buffer3), "Min: %d.%02d C", minInt / 100, abs(minInt % 100));
     snprintf(buffer4, sizeof(buffer4), "Avg: %d.%02d C", avgInt / 100, abs(avgInt % 100));
 
-    // snprintf(buffer5, sizeof(buffer5), "%02d.%02d.%04d", day, month, year);
-    // snprintf(buffer6, sizeof(buffer6), "%02d:%02d", hour, minute);
-
     snprintf(buffer5, sizeof(buffer5), "%02d.%02d.%04d", rtc.getDay(), rtc.getMonth(), rtc.getYear() + 2000);
     snprintf(buffer6, sizeof(buffer6), "%02d:%02d", rtc.getHours(), rtc.getMinutes());
-
-    snprintf(buffer7, sizeof(buffer7), "Current date");
-    snprintf(buffer8, sizeof(buffer8), "Current Temp");
-    snprintf(buffer9, sizeof(buffer9), "Last");
-    snprintf(buffer10, sizeof(buffer10), "Update");
 
     display.setPartialWindow(0, 0, display.width(), display.height());
     display.firstPage();
@@ -58,9 +73,6 @@ void printEPaper()
         display.fillScreen(GxEPD_WHITE);
 
         // current date
-        display.setFont(&FreeMono9pt7b);
-        display.setCursor(5, 10);
-        display.print(buffer7);
 
         // date
         display.setFont(&FreeSans12pt7b);
@@ -68,31 +80,33 @@ void printEPaper()
         display.print(buffer5);
 
         // current temperature
+
+        // Термометр + температура
+        display.setFont(&FreeSansBold12pt7b);
+
+        drawThermometerSymbol(5, 50);
+        display.setCursor(25, 70);
+        display.print(buffer1);
+
         display.setFont(&FreeMono9pt7b);
-        display.setCursor(5, 45);
-        display.print(buffer8);
 
-        if (millis() - showTempTimer >= DELAY_SHOW_TEMP)
+        display.setCursor(10, 87);
+        display.print(buffer2);
+        display.setCursor(10, 102);
+        display.print(buffer3);
+        display.setCursor(10, 115);
+        display.print(buffer4);
+
+        // last update
+
+        display.setFont(&FreeSans12pt7b);
+        display.setCursor(180, 120);
+        display.print(buffer6);
+
+        if (millis() - showAlarmTimer >= DELAY_SHOW_TEMP)
         {
-
-            // Термометр + температура
-            display.setFont(&FreeSansBold12pt7b);
-
-            drawThermometerSymbol(5, 50);
-            display.setCursor(25, 70);
-            display.print(buffer1);
-
-            display.setFont(&FreeMono9pt7b);
-
-            display.setCursor(10, 87);
-            display.print(buffer2);
-            display.setCursor(10, 102);
-            display.print(buffer3);
-            display.setCursor(10, 115);
-            display.print(buffer4);
-
             // Галочка/хрестик
-            if (isAlarm)
+            if (isLowAlarm || isHighAlarm)
             {
                 drawCrossMark(display.width() - 50, 15);
             }
@@ -101,20 +115,6 @@ void printEPaper()
                 drawCheckMark(display.width() - 50, 15);
             }
         }
-
-        // last update
-        display.setFont(&FreeMono9pt7b);
-        display.setCursor(160, 85);
-        display.print(buffer9);
-
-        display.setFont(&FreeMono9pt7b);
-        display.setCursor(160, 100);
-        display.print(buffer10);
-
-        display.setFont(&FreeSans12pt7b);
-        display.setCursor(180, 120);
-        display.print(buffer6);
-
     } while (display.nextPage());
 }
 

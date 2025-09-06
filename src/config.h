@@ -11,7 +11,8 @@
 #define EPD_BUSY PB10
 
 // #define DELAY_SHOW_TEMP 1200000
-#define DELAY_SHOW_TEMP 1000
+#define DELAY_SHOW_TEMP 10000
+#define DELAY_SHOW_ALARM 10000
 
 #define WAITING_MODE_DELAY 3000
 // #define WAITING_MODE_DELAY 10000
@@ -32,5 +33,6 @@ extern bool isBtnPres;
 extern bool enterHold;
 
 extern unsigned long showTempTimer;
+extern unsigned long showAlarmTimer;
 
 #endif

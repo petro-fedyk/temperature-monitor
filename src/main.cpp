@@ -131,14 +131,20 @@ void stateMachine(uint8_t &state)
     {
     case 1:
         handleData();
-        // setDataEpaper();
 
         break;
 
     case 2:
+        if (millis() - showTempTimer >= DELAY_SHOW_TEMP)
+        {
+            state = 3;
+            dateEpaper();
+            showAlarmTimer = millis();
+            Serial.println("state 3");
+        }
+        break;
+    case 3:
         updateTemp();
-        // setDateRTC();
-
         break;
 
     default:
