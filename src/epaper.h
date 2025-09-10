@@ -1,5 +1,6 @@
 #ifndef EPAPER_H
 #define EPAPER_H
+
 #include <Arduino.h>
 #include <GxEPD2_BW.h>
 #include <Fonts/FreeSansBold12pt7b.h>

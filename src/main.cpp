@@ -33,7 +33,7 @@ void drawThermometerSymbol(int16_t x, int16_t y);
 void setup()
 {
     Serial.begin(115200);
-    pinMode(SET_BTN, INPUT_PULLUP); // <-- підтяжка вбудована
+    pinMode(SET_BTN, INPUT_PULLUP);
     pinMode(ENTER_BTN, INPUT_PULLUP);
     pinMode(ledPin, OUTPUT);
 
@@ -60,7 +60,6 @@ void handleButtons()
     uint8_t set_Btn_State = digitalRead(SET_BTN);
     uint8_t enter_Btn_State = digitalRead(ENTER_BTN);
 
-    // Якщо обидві кнопки натиснуті
     if (set_Btn_State == LOW && enter_Btn_State == LOW)
     {
         if (!buttonsHold)
@@ -71,7 +70,7 @@ void handleButtons()
         }
         if (millis() - waitingTime >= WAITING_MODE_DELAY)
         {
-            state = 1; // Режим налаштування дати
+            state = 1;
             Serial.println("→ State 1 (setup date)");
         }
     }

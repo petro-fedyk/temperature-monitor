@@ -3,6 +3,7 @@
 
 #include <Arduino.h>
 #include "config.h"
+#include "createJson.h"
 
 extern float tempC;
 extern float maxTemp;
@@ -16,6 +17,11 @@ extern bool isHighAlarm;
 
 extern unsigned long lowOutStart;
 extern unsigned long highOutStart;
+
+extern unsigned long totalLowOutTime;
+extern unsigned long totalHighOutTime;
+
+extern unsigned long startAlarmTimer;
 
 void readTemp();
 uint16_t readRegister16(uint8_t address, uint8_t reg);

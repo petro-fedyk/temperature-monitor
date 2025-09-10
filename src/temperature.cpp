@@ -1,6 +1,18 @@
 #include "temperature.h"
 #include <Wire.h>
 
+#define SENSOR_ADDR 0x48
+#define UPDATE_TIME 2000
+// #define LOW_ALARM_TIME (8UL * 60000UL)   // 8 хв
+// #define HIGH_ALARM_TIME (15UL * 60000UL) // 15 хв
+
+#define LOW_ALARM_TIME 3000
+#define HIGH_ALARM_TIME 4000
+// #define HOUR_TIME 3600000 // 1 година
+// #define DAY_TIME 86400000 // 1 доба
+#define HOUR_TIME 10000 // for debuging
+#define DAY_TIME 20000  // for debuging
+
 // глобальні змінні тут
 float tempC = 0;
 float maxTemp = -1000.0;
@@ -26,14 +38,10 @@ unsigned long highOutStart = 0;
 unsigned long lastHourTime = 0;
 unsigned long lastDayTime = 0;
 
-#define SENSOR_ADDR 0x48
-#define UPDATE_TIME 2000
-#define LOW_ALARM_TIME (8UL * 60000UL)   // 8 хв
-#define HIGH_ALARM_TIME (15UL * 60000UL) // 15 хв
-// #define HOUR_TIME 3600000 // 1 година
-// #define DAY_TIME 86400000 // 1 доба
-#define HOUR_TIME 10000 // for debuging
-#define DAY_TIME 20000  // for debuging
+unsigned long totalLowOutTime = 0;
+unsigned long totalHighOutTime = 0;
+
+unsigned long startAlarmTimer = 0;
 
 void readTemp()
 {
@@ -75,15 +83,22 @@ void checkAlarm()
             lowOutStart = now;
             Serial.println("Temperature below min started");
         }
-        else if (!isLowAlarm && (now - lowOutStart >= LOW_ALARM_TIME))
+        else
         {
-            isLowAlarm = true;
-            Serial.println("LOW ALARM: temp below min for >8 minutes");
+            // додаємо час у виході
+            totalLowOutTime += (now - lowOutStart);
+            lowOutStart = now;
+
+            if (!isLowAlarm && (totalLowOutTime >= LOW_ALARM_TIME))
+            {
+                isLowAlarm = true;
+                Serial.println("LOW ALARM: temp below min for >8 minutes");
+            }
         }
     }
     else
     {
-        // Повернулась у норму
+        // якщо вийшла з зони — обнуляємо старт
         lowOutStart = 0;
     }
 
@@ -95,15 +110,21 @@ void checkAlarm()
             highOutStart = now;
             Serial.println("Temperature above max started");
         }
-        else if (!isHighAlarm && (now - highOutStart >= HIGH_ALARM_TIME))
+        else
         {
-            isHighAlarm = true;
-            Serial.println("HIGH ALARM: temp above max for >15 minutes");
+            // додаємо час у виході
+            totalHighOutTime += (now - highOutStart);
+            highOutStart = now;
+
+            if (!isHighAlarm && (totalHighOutTime >= HIGH_ALARM_TIME))
+            {
+                isHighAlarm = true;
+                Serial.println("HIGH ALARM: temp above max for >15 minutes");
+            }
         }
     }
     else
     {
-        // Повернулась у норму
         highOutStart = 0;
     }
 }
@@ -113,8 +134,10 @@ void updateTemp()
     if (millis() - currTime >= UPDATE_TIME)
     {
         readTemp();
-
-        checkAlarm();
+        if (millis() - startAlarmTimer >= DELAY_SHOW_TEMP)
+        {
+            checkAlarm();
+        }
 
         if (tempC > maxTemp)
         {
@@ -166,9 +189,18 @@ void updateTemp()
             Serial.println(avrTemp);
         }
 
+        logToJson();
+
+        // --- скидати мін/макс/середнє ---
+        maxTemp = -1000.0;
+        minTemp = 1000.0;
+        avrTemp = 0;
+
         // обнулити для наступної доби
         daySum = 0;
         hoursPassed = 0;
         lastDayTime = millis();
+
+        Serial.println("=== New Day: stats reset ===");
     }
 }
