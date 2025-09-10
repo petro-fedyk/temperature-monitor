@@ -6,6 +6,7 @@
 #include <Fonts/FreeSansBold12pt7b.h>
 #include <Fonts/FreeMono9pt7b.h>
 #include <Fonts/FreeSans12pt7b.h>
+#include <Fonts/FreeSans18pt7b.h>
 
 #include "config.h"
 #include "date.h"

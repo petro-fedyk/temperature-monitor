@@ -72,29 +72,27 @@ void printEPaper()
     {
         display.fillScreen(GxEPD_WHITE);
 
-        // current date
-
         // date
         display.setFont(&FreeSans12pt7b);
-        display.setCursor(10, 30);
+        display.setCursor(10, 120);
         display.print(buffer5);
 
         // current temperature
 
         // Термометр + температура
-        display.setFont(&FreeSansBold12pt7b);
+        display.setFont(&FreeSans18pt7b);
 
-        drawThermometerSymbol(5, 50);
-        display.setCursor(25, 70);
+        // drawThermometerSymbol(20, 20);
+        display.setCursor(80, 30);
         display.print(buffer1);
 
         display.setFont(&FreeMono9pt7b);
 
-        display.setCursor(10, 87);
+        display.setCursor(50, 48);
         display.print(buffer2);
-        display.setCursor(10, 102);
+        display.setCursor(50, 63);
         display.print(buffer3);
-        display.setCursor(10, 115);
+        display.setCursor(50, 78);
         display.print(buffer4);
 
         // last update
@@ -108,11 +106,11 @@ void printEPaper()
             // Галочка/хрестик
             if (isLowAlarm || isHighAlarm)
             {
-                drawCrossMark(display.width() - 50, 15);
+                drawCrossMark(10, 15);
             }
             else
             {
-                drawCheckMark(display.width() - 50, 15);
+                drawCheckMark(10, 15);
             }
         }
     } while (display.nextPage());
